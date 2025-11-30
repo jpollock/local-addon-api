@@ -1,0 +1,29 @@
+{
+  "$schema": "https://local-labs.github.io/local-addon-api/schema.json",
+  "node": {
+    "startCommand": "npm start",
+    "autoStart": true,
+    "port": 3000
+  },
+  "wordpress": {
+    "plugins": [
+      {
+        "source": "bundled",
+        "slug": "example-connector",
+        "path": "wp-plugin",
+        "autoActivate": true
+      },
+      {
+        "source": "wporg",
+        "slug": "query-monitor"
+      },
+      {
+        "source": "git",
+        "slug": "custom-plugin",
+        "url": "https://github.com/example/custom-plugin.git",
+        "branch": "main",
+        "autoActivate": true
+      }
+    ]
+  }
+}

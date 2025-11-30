@@ -1,0 +1,23 @@
+{
+  "name": "local-addon-example",
+  "productName": "Example Addon",
+  "version": "1.0.0",
+  "description": "Example Local addon demonstrating @local-labs/local-addon-api usage",
+  "main": "lib/main.js",
+  "renderer": "lib/renderer.js",
+  "scripts": {
+    "build": "tsc",
+    "watch": "tsc --watch"
+  },
+  "dependencies": {
+    "@local-labs/local-addon-api": "file:../.."
+  },
+  "devDependencies": {
+    "@getflywheel/local": "^6.0.0",
+    "@types/react": "^18.2.0",
+    "typescript": "^5.3.0"
+  },
+  "peerDependencies": {
+    "@getflywheel/local": ">=6.0.0"
+  }
+}

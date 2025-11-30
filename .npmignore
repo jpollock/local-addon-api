@@ -1,0 +1,25 @@
+# Source files (only publish compiled)
+src/
+
+# Development files
+*.md
+!README.md
+.eslintrc*
+.prettierrc*
+tsconfig.json
+jest.config.*
+.github/
+
+# Test files
+**/*.test.ts
+**/*.spec.ts
+__tests__/
+coverage/
+
+# Build artifacts
+*.tsbuildinfo
+
+# Development configs
+.env*
+.vscode/
+.idea/

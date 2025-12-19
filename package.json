@@ -87,7 +87,14 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/wpengine/local-addon-api"
+    "url": "https://github.com/jpollock/local-addon-api"
   },
-  "author": "WP Engine"
+  "homepage": "https://github.com/jpollock/local-addon-api#readme",
+  "bugs": {
+    "url": "https://github.com/jpollock/local-addon-api/issues"
+  },
+  "author": "Jeremy Pollock",
+  "engines": {
+    "node": ">=18.0.0"
+  }
 }

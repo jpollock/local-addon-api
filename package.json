@@ -1,5 +1,5 @@
 {
-  "name": "@local-labs/local-addon-api",
+  "name": "@local-labs-jpollock/local-addon-api",
   "version": "0.0.1",
   "description": "Comprehensive addon development toolkit for Local by Flywheel",
   "main": "lib/index.js",

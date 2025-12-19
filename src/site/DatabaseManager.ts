@@ -138,12 +138,21 @@ export class DatabaseManager {
   /**
    * Escape a string for use in SQL queries
    *
-   * Note: This is a basic escape function. For complex queries,
-   * consider using parameterized queries if available.
+   * Handles:
+   * - Null bytes (removed to prevent string truncation)
+   * - Backslashes (escaped first to avoid double-escaping)
+   * - Single quotes (SQL standard escaping)
+   * - Control characters (newlines, carriage returns, tabs)
+   *
+   * Note: For complex queries, consider using parameterized queries if available.
    */
   private escape(value: string): string {
     return value
-      .replace(/'/g, "''")
-      .replace(/\\/g, '\\\\');
+      .replace(/\0/g, '')           // Remove null bytes (can truncate strings in MySQL)
+      .replace(/\\/g, '\\\\')       // Escape backslashes first
+      .replace(/'/g, "''")          // SQL single quote escaping
+      .replace(/\n/g, '\\n')        // Newlines
+      .replace(/\r/g, '\\r')        // Carriage returns
+      .replace(/\t/g, '\\t');       // Tabs
   }
 }

@@ -8,6 +8,7 @@ import * as path from 'path';
 import * as fs from 'fs-extra';
 import { logger } from '../utils/logger';
 import { getErrorMessage } from '../utils/errorUtils';
+import { isValidGitUrl, isValidBranchName } from '../utils/validation';
 
 export interface GitCloneOptions {
   url: string;
@@ -46,8 +47,8 @@ export class GitManager {
     const { url, branch, targetPath, onProgress } = options;
 
     try {
-      // Validate Git URL
-      if (!this.isValidGitUrl(url)) {
+      // Validate Git URL using centralized validator
+      if (!isValidGitUrl(url)) {
         return {
           success: false,
           path: '',
@@ -55,8 +56,8 @@ export class GitManager {
         };
       }
 
-      // Validate branch name
-      if (!this.isValidBranchName(branch)) {
+      // Validate branch name using centralized validator
+      if (!isValidBranchName(branch)) {
         return {
           success: false,
           path: '',
@@ -145,90 +146,6 @@ export class GitManager {
         error: this.sanitizeGitError(error)
       };
     }
-  }
-
-  /**
-   * Validate Git URL format
-   * Allows: https://, git@, ssh://
-   * Blocks: file://, malicious URLs
-   */
-  private isValidGitUrl(url: string): boolean {
-    if (!url || typeof url !== 'string') {
-      return false;
-    }
-
-    // Allow common Git URL formats
-    const validPatterns = [
-      /^https:\/\/.+\.git$/i,        // https://github.com/user/repo.git
-      /^https:\/\/.+$/i,             // https://github.com/user/repo
-      /^git@.+:.+\.git$/i,           // git@github.com:user/repo.git
-      /^git@.+:.+$/i,                // git@github.com:user/repo
-      /^ssh:\/\/.+\.git$/i,          // ssh://git@github.com/user/repo.git
-      /^ssh:\/\/.+$/i                // ssh://git@github.com/user/repo
-    ];
-
-    // Check if URL matches any valid pattern
-    const isValid = validPatterns.some(pattern => pattern.test(url));
-    if (!isValid) {
-      return false;
-    }
-
-    // Block file:// URLs and other potentially dangerous protocols
-    const dangerousPatterns = [
-      /^file:/i,
-      /^javascript:/i,
-      /^data:/i,
-      /^\//,  // Absolute paths
-      /^\.\./, // Relative paths with traversal
-    ];
-
-    const isDangerous = dangerousPatterns.some(pattern => pattern.test(url));
-    if (isDangerous) {
-      return false;
-    }
-
-    // Block URLs with shell metacharacters
-    const shellMetaChars = /[;&|`$()<>\\'"]/;
-    if (shellMetaChars.test(url)) {
-      return false;
-    }
-
-    return true;
-  }
-
-  /**
-   * Validate Git branch name
-   * Blocks shell metacharacters that could enable command injection
-   */
-  private isValidBranchName(branch: string): boolean {
-    if (!branch || typeof branch !== 'string') {
-      return false;
-    }
-
-    // Branch name length check
-    if (branch.length === 0 || branch.length > 200) {
-      return false;
-    }
-
-    // Allow alphanumeric, hyphens, underscores, slashes, and dots
-    // This matches standard Git branch naming conventions
-    const validBranchPattern = /^[a-zA-Z0-9/_.-]+$/;
-    if (!validBranchPattern.test(branch)) {
-      return false;
-    }
-
-    // Block shell metacharacters
-    const shellMetaChars = /[;&|`$()<>\\'"]/;
-    if (shellMetaChars.test(branch)) {
-      return false;
-    }
-
-    // Block branch names that start with special characters
-    if (branch.startsWith('.') || branch.startsWith('/') || branch.startsWith('-')) {
-      return false;
-    }
-
-    return true;
   }
 
   /**

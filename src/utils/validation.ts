@@ -404,6 +404,12 @@ export function isValidGitUrl(url: string): boolean {
     return false;
   }
 
+  // Block shell metacharacters that could enable command injection
+  const shellMetaChars = /[;&|`$()<>\\'"]/;
+  if (shellMetaChars.test(url)) {
+    return false;
+  }
+
   // Allow HTTPS URLs
   if (url.startsWith('https://')) {
     try {
@@ -448,6 +454,7 @@ export function isValidBranchName(branch: string): boolean {
   // - Cannot contain '..' or '@{' or '\\'
   // - Cannot end with '/' or '.lock'
   // - Cannot contain control characters or spaces
+  // - Cannot contain shell metacharacters (security)
 
   const invalidPatterns = [
     /^\./,           // Starts with .
@@ -460,6 +467,7 @@ export function isValidBranchName(branch: string): boolean {
     /[\x00-\x1f\x7f]/, // Control characters
     /\s/,            // Whitespace
     /[~^:?*\[]/,     // Special characters
+    /[;&|`$()<>'"]/,  // Shell metacharacters (prevent command injection)
   ];
 
   for (const pattern of invalidPatterns) {
